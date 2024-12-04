@@ -40,6 +40,8 @@ if __name__ == "__main__":
     #part 2
     acc = float("-inf")
     comp_op = operator.gt
+
+    
     for perm in permutations:
         length = 0
         for pair in itertools.pairwise(perm):

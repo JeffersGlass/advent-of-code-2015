@@ -2,6 +2,8 @@ import re
 
 pattern = re.compile(r"^(\d)\1*")
 
+
+
 def say_it(s: str) -> str:
     result = ""
     while (s):

@@ -33,14 +33,20 @@ if __name__ == "__main__":
     ends = get_ends_from_paths(paths)
     permutations = itertools.permutations(ends, len(ends))
     
-    min = float("inf")
+    #part 1
+    acc = float("inf")
+    comp_op = operator.lt
+
+    #part 2
+    acc = float("-inf")
+    comp_op = operator.gt
     for perm in permutations:
         length = 0
         for pair in itertools.pairwise(perm):
             pair_distance = next(path for path in paths if set(pair) == set(path.ends)).distance
             length += pair_distance
-        if length < min: min = length
-    print(min)
+        if comp_op(length, acc): acc = length
+    print(acc)
 
     #print(sorted(combinations))
     #print("\n".join(str(p) for p in sorted(paths, key=operator.attrgetter('ends'))))

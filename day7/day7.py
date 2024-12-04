@@ -14,6 +14,11 @@ class Wire:
 class LiteralWire(Wire):
     cached_value:int | None = None
 
+    def __post_init__(self):
+        pass
+        #print(f"Literal cached value for {self.name: <2} {self.cached_value}")
+
+
     def emit_value(self):
         #print(f"Emitting literal value {self.value}")
         return self.cached_value
@@ -30,12 +35,15 @@ class ArithmeticWire(Wire):
     def emit_value(self) -> int:
         if self.cached_value is not None: 
             #print(f"Using cached value for wire {self.name}")
+            if self.cached_value > 2**16: raise ValueError("AHA!")
             return self.cached_value
         #print(f"Getting value for wire {self.name} with op {self.op} and parents {self.parents}")
         #print(f"Op is {getsource(op).strip()}")
         real_parents = [self.wires[p] for p in self.parents]
         if all(p.cached_value is not None for p in real_parents):
             self.cached_value = self.op(*[p.emit_value() for p in real_parents])
+            #print(f"New cached value for {self.name: <2} {self.cached_value}")
+            if self.cached_value > 2**16: raise ValueError("AHA!")
             return self.cached_value
         else:
             raise RecursionError(f"Some children of {self.__class__.__name__} {self.name} do not have fixed values: {[p.name for p in real_parents if not p.cached_value]}")
@@ -88,6 +96,7 @@ def process_wires(wires: dict[str, Wire], endwire: str):
     finished = set()
 
     while not wires[endwire].cached_value:
+        print("-")
         #print(f"Starting loop with {len([w for w in wires if w not in finished])} wires to check")
         updated = 0
         for wire in [w for w in wires if w not in finished]:
@@ -167,10 +176,19 @@ if __name__ == "__main__":
     assert process_wires(load_lines(data), 'a') == -4
 
     print("Passed tests")
+
     with open("day7/data.txt", "r") as f:
         lines = f.readlines()
 
-    print(process_wires(load_lines(lines), 'a'))
+    #part 1
+    part_1_result = process_wires(load_lines(lines), 'a')
+    print(f"===== {part_1_result= } ====\n\n")
+
+    #part 2
+    new_lines = [re.sub(r"(\d+) -> b$", f"{part_1_result} -> b", line) for line in lines]
+    #print("\n".join(str(line) for line in lines if "-> b" in line))
+    part_2_result = process_wires(load_lines(new_lines), 'a')
+    print(f"{part_2_result= }")
 
 
 

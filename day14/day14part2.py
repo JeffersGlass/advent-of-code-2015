@@ -14,7 +14,7 @@ class Reindeer:
     name: str
     speed: int
     flight_capacity: int
-    rest_capcity: int
+    rest_capacity: int
     location: int = 0
     duration_in_phase: int = 0
     phase: State = State.FLYING
@@ -29,13 +29,13 @@ class Reindeer:
                 self.duration_in_phase = 0
 
         elif self.phase == State.RESTING:
-            if self.duration_in_phase >= self.rest_capcity:
+            if self.duration_in_phase >= self.rest_capacity:
                 self.phase = State.FLYING
                 self.duration_in_phase = 0
 
 
 pattern = re.compile(
-    r"(?P<name>\w+) can fly (?P<speed>\d+) km/s for (?P<flight_capacity>\d+) seconds, but then must rest for (?P<rest_capcity>\d+) seconds."
+    r"(?P<name>\w+) can fly (?P<speed>\d+) km/s for (?P<flight_capacity>\d+) seconds, but then must rest for (?P<rest_capacity>\d+) seconds."
 )
 
 with open("day14/data.txt", "r") as f:
@@ -49,7 +49,7 @@ for line in data:
             name=m.group("name"),
             speed=int(m.group("speed")),
             flight_capacity=int(m.group("flight_capacity")),
-            rest_capcity=int(m.group("rest_capcity")),
+            rest_capacity=int(m.group("rest_capacity")),
         )
     )
 
